@@ -1,5 +1,6 @@
 package sample;
 import javafx.application.Application;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -27,6 +28,9 @@ public class Main extends Application {
     private Button buzzwordChecker;
     private BuzzwordCounter buzzwordCounter;
     private ProgressBar bingoBar;
+    private double counter;
+    private Label bingoLabel;
+    private Label counterLabel;
 
     public static void main (String[]args){
         launch(args);
@@ -43,15 +47,17 @@ public class Main extends Application {
         exitButton = createExitButton();
         saveButton = createSaveButton();
         loadButton = createLoadButton();
-        buzzwordChecker = createBuzzwordChecker();
+
         VBox vbox = createMenu();
 
 
         txtInput = new TextArea("Beispieltext, \n lets goooooo. \n Füg irgendwas hier ein oder schreibe etwas.");
         txtInput.setPrefColumnCount(20);
         txtInput.setPrefRowCount(100);
-
         buzzwordCounter = createBuzzwordCounter();
+        buzzwordChecker = createBuzzwordChecker();
+
+
 
         ProgressBar progressBar = new ProgressBar(0);
 
@@ -60,20 +66,22 @@ public class Main extends Application {
         countdownButton.setOnAction(e -> countdown(countdownButton, progressBar));
 
         bingoBar = new ProgressBar(0);
-        Label bingoLabel = new Label("");
-        Label counterLabel = new Label ("");
+        bingoLabel = new Label("Bingo");
+        bingoLabel.setVisible(false);
+        counterLabel = new Label ("0");
 
         gridpane.add(vbox, 0, 0);
+        gridpane.add(counterLabel, 1,0);
+        gridpane.add(buzzwordChecker,2, 0);
+        gridpane.add(bingoBar, 3, 0);
+        gridpane.add(bingoLabel, 4,0);
         gridpane.add(txtInput, 0, 1, 6, 1);
         gridpane.add(exitButton, 0, 2);
         gridpane.add(loadButton, 2, 2);
         gridpane.add(saveButton, 4, 2);
         gridpane.add(countdownButton, 6, 2);
         gridpane.add(progressBar, 8, 2);
-        gridpane.add(bingoBar, 4, 0);
-        gridpane.add(bingoLabel, 3,0);
-        gridpane.add(counterLabel, 2,0);
-        gridpane.add(buzzwordChecker,3, 0);
+
 
         Image image = new Image("file:src/resources/Beispiel.jpg", 1024, 724, false, true);
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
@@ -178,12 +186,22 @@ public class Main extends Application {
     public Button createBuzzwordChecker(){
         Button buzzwordChecker = new Button();
         buzzwordChecker.setText("Buzzwords Checken");
-        buzzwordChecker.setOnAction(e -> buzzwordCounter.setCount(txtInput.textProperty()));
+        buzzwordChecker.setOnAction(e -> buzzword());
         return buzzwordChecker;
     }
     public BuzzwordCounter createBuzzwordCounter(){
         List<String> buzzwords = List.of("Model","View","Controller");
-        BuzzwordCounter buzzwordCounter = new BuzzwordCounter( buzzwords, txtInput.getText());
+        BuzzwordCounter buzzwordCounter = new BuzzwordCounter( buzzwords, txtInput.textProperty());
         return buzzwordCounter;
+    }
+    public void buzzword(){
+        IntegerProperty counterProperty = buzzwordCounter.setCount();
+        counter = counterProperty.getValue();
+        counter = counter/3;
+        counterLabel.setText(String.valueOf(counter));
+        bingoBar.setProgress(counter);
+        if(counter == 1){
+            bingoLabel.setVisible(true);
+        }
     }
 }
