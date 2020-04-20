@@ -26,6 +26,7 @@ public class Main extends Application {
     private Button exitButton;
     private Button buzzwordChecker;
     private BuzzwordCounter buzzwordCounter;
+    private ProgressBar bingoBar;
 
     public static void main (String[]args){
         launch(args);
@@ -38,7 +39,7 @@ public class Main extends Application {
         gridpane.setHgap(10);
         gridpane.setVgap(10);
 
-        buzzwordCounter = createBuzzwordCounter();
+
         exitButton = createExitButton();
         saveButton = createSaveButton();
         loadButton = createLoadButton();
@@ -50,17 +51,17 @@ public class Main extends Application {
         txtInput.setPrefColumnCount(20);
         txtInput.setPrefRowCount(100);
 
+        buzzwordCounter = createBuzzwordCounter();
+
         ProgressBar progressBar = new ProgressBar(0);
 
         Button countdownButton = new Button();
         countdownButton.setText("Countdown");
         countdownButton.setOnAction(e -> countdown(countdownButton, progressBar));
 
-        ProgressBar bingoBar = new ProgressBar(0);
+        bingoBar = new ProgressBar(0);
         Label bingoLabel = new Label("");
         Label counterLabel = new Label ("");
-
-
 
         gridpane.add(vbox, 0, 0);
         gridpane.add(txtInput, 0, 1, 6, 1);
@@ -177,7 +178,7 @@ public class Main extends Application {
     public Button createBuzzwordChecker(){
         Button buzzwordChecker = new Button();
         buzzwordChecker.setText("Buzzwords Checken");
-        buzzwordChecker.setOnAction(e -> buzzwordCounter.setCount());
+        buzzwordChecker.setOnAction(e -> buzzwordCounter.setCount(txtInput.textProperty()));
         return buzzwordChecker;
     }
     public BuzzwordCounter createBuzzwordCounter(){
